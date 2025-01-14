@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class ReleaseDateValidator implements ConstraintValidator<ReleaseDate, LocalDate> {
     private LocalDate minimumDate;
 
-      @Override
+    @Override
     public void initialize(ReleaseDate constraintAnnotation) {
         minimumDate = LocalDate.parse(constraintAnnotation.value());
     }

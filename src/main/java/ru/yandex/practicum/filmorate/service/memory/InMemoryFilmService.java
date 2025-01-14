@@ -36,7 +36,7 @@ public class InMemoryFilmService implements FilmService {
         if (filmsService.containsKey(film.getId())) {
             filmsService.put(film.getId(), film);
         } else {
-            throw new NotFoundException("Запрашиваемый фильм для обновления не найден. Повторите попытку");
+            throw new NotFoundException("Запрашиваемый фильм " + film.getId() + " для обновления не найден. Повторите попытку");
         }
     }
 }

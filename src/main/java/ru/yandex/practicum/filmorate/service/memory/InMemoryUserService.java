@@ -36,7 +36,7 @@ public class InMemoryUserService implements UserService {
         if (usersService.containsKey(user.getId())) {
             usersService.put(user.getId(), user);
         } else {
-            throw new NotFoundException("Запрашиваемый пользователь для обновления не найден. Повторите попытку");
+            throw new NotFoundException("Запрашиваемый пользователь " + user.getId() + " для обновления не найден. Повторите попытку");
         }
     }
 }

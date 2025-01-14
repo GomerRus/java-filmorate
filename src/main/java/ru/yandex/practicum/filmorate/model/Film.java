@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.ReleaseDate;
 
 import java.time.LocalDate;
 
+@Builder(toBuilder = true)
 @Data
 public class Film {
     private Long id;
@@ -24,6 +26,7 @@ public class Film {
     @NotNull
     private LocalDate releaseDate;
 
+    @NotNull
     @Positive(message = "Продолжительность фильма должна быть положительным числом")
     private Integer duration;
 }
