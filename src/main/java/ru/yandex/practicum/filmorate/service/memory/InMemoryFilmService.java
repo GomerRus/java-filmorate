@@ -1,42 +1,61 @@
 package ru.yandex.practicum.filmorate.service.memory;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class InMemoryFilmService implements FilmService {
-    private final Map<Long, Film> filmsService = new HashMap<>();
-    private long id = 0L;
+    private FilmStorage filmStorage;
+    private UserService userService;
 
     @Override
     public List<Film> getAllFilms() {
-        return new ArrayList<>(filmsService.values());
+        return filmStorage.getAllFilms();
     }
 
     @Override
     public void addFilm(Film film) {
-        if (filmsService.containsKey(film.getId())) {
-            throw new ValidationException("Фильм с id: " + film.getId() + " уже существует");
-        }
-        film.setId(++id);
-        filmsService.put(id, film);
+        filmStorage.addFilm(film);
     }
-
 
     @Override
     public void updateFilm(Film film) {
-        if (filmsService.containsKey(film.getId())) {
-            filmsService.put(film.getId(), film);
-        } else {
-            throw new NotFoundException("Запрашиваемый фильм " + film.getId() + " для обновления не найден. Повторите попытку");
+        filmStorage.updateFilm(film);
+    }
+
+    @Override
+    public Film getFilmById(Long filmId) {
+        return filmStorage.getFilmById(filmId);
+    }
+
+    @Override
+    public void addLikeFilm(Long filmId, Long userId) {
+        if (userService.getUserById(userId) != null) {
+            filmStorage.getFilmById(filmId).getLikesId().add(userId);
         }
+    }
+
+    @Override
+    public void deleteLikeFilm(Long filmId, Long userId) {
+        if (userService.getUserById(userId) != null) {
+            filmStorage.getFilmById(filmId).getLikesId().remove(userId);
+        }
+    }
+
+    @Override
+    public List<Film> getPopularFilm(Integer countSize) {
+        return filmStorage.getAllFilms().stream()
+                .sorted(Comparator.comparingInt(Film::getAmountLikesFilm).reversed())
+                .limit(countSize)
+                .collect(Collectors.toList());
     }
 }

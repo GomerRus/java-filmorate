@@ -10,4 +10,12 @@ public interface FilmService {
     void addFilm(Film film);
 
     void updateFilm(Film film);
+
+    Film getFilmById(Long filmId);
+
+    void addLikeFilm(Long filmId, Long userId);
+
+    void deleteLikeFilm(Long filmId, Long userId);
+
+    List<Film> getPopularFilm(Integer countFilm);
 }

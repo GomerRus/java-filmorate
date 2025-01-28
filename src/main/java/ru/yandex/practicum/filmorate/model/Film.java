@@ -10,11 +10,14 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.ReleaseDate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder(toBuilder = true)
 @Data
 public class Film {
     private Long id;
+    private Set<Long> likesId = new HashSet<>();
 
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
@@ -29,4 +32,8 @@ public class Film {
     @NotNull
     @Positive(message = "Продолжительность фильма должна быть положительным числом")
     private Integer duration;
+
+    public int getAmountLikesFilm() {
+        return likesId.size();
+    }
 }
