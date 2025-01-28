@@ -1,11 +1,10 @@
-package ru.yandex.practicum.filmorate.service.memory;
+package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Comparator;
 import java.util.List;

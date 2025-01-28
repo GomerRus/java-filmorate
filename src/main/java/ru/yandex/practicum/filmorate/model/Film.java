@@ -17,7 +17,7 @@ import java.util.Set;
 @Data
 public class Film {
     private Long id;
-    private Set<Long> likesId = new HashSet<>();
+    private final Set<Long> likesId = new HashSet<>();
 
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;

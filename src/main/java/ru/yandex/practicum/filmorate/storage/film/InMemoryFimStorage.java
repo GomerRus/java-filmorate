@@ -1,10 +1,9 @@
-package ru.yandex.practicum.filmorate.storage.memory;
+package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,11 +24,11 @@ public class InMemoryFimStorage implements FilmStorage {
     public void addFilm(Film film) {
         if (filmsStorage.containsKey(film.getId())) {
             throw new ValidationException("Фильм с id: " + film.getId() + " уже существует");
+        } else {
+            film.setId(++id);
+            filmsStorage.put(id, film);
         }
-        film.setId(++id);
-        filmsStorage.put(id, film);
     }
-
 
     @Override
     public void updateFilm(Film film) {
@@ -42,11 +41,11 @@ public class InMemoryFimStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(Long filmId) {
-        if (filmId == null) {
-            throw new ValidationException("Вы не указали ID фильма. Повторите запрос.");
+        if (filmsStorage.get(filmId) == null) {
+            throw new NotFoundException("Вы не указали ID фильма. Повторите запрос.");
         }
         if (!filmsStorage.containsKey(filmId)) {
-            throw new NotFoundException("Фильм с ID: " + filmId + " не найден.");
+            throw new ValidationException("Фильм с ID: " + filmId + " не найден.");
         }
         return filmsStorage.get(filmId);
     }
