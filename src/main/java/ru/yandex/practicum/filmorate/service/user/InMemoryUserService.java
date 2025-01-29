@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -35,14 +36,18 @@ public class InMemoryUserService implements UserService {
 
     @Override
     public void addFriendsUser(Long userId, Long friendId) {
-        userStorage.getUserById(userId).getFriendsId().add(friendId);
-        userStorage.getUserById(friendId).getFriendsId().add(userId);
+        User user = userStorage.getUserById(userId);
+        User userFriend = userStorage.getUserById(friendId);
+        user.getFriendsId().add(friendId);
+        userFriend.getFriendsId().add(userId);
     }
 
     @Override
     public void deleteFriendsUser(Long userId, Long friendId) {
-        userStorage.getUserById(userId).getFriendsId().remove(friendId);
-        userStorage.getUserById(friendId).getFriendsId().remove(userId);
+        User user = userStorage.getUserById(userId);
+        User userFriend = userStorage.getUserById(friendId);
+        user.getFriendsId().remove(friendId);
+        userFriend.getFriendsId().remove(userId);
     }
 
     @Override
@@ -57,8 +62,9 @@ public class InMemoryUserService implements UserService {
     @Override
     public List<User> getCommonFriendsUser(Long userId, Long commonId) {
         List<User> friendsUser = new ArrayList<>();
+        Set<Long> friendsCommon = userStorage.getUserById(commonId).getFriendsId();
         for (Long friendId : userStorage.getUserById(userId).getFriendsId()) {
-            if (userStorage.getUserById(commonId).getFriendsId().contains(friendId)) {
+            if (friendsCommon.contains(friendId)) {
                 friendsUser.add(userStorage.getUserById(friendId));
             }
         }

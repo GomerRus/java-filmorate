@@ -38,16 +38,14 @@ public class InMemoryFilmService implements FilmService {
 
     @Override
     public void addLikeFilm(Long filmId, Long userId) {
-        if (userService.getUserById(userId) != null) {
-            filmStorage.getFilmById(filmId).getLikesId().add(userId);
-        }
+        userService.getUserById(userId);
+        filmStorage.getFilmById(filmId).getLikesId().add(userId);
     }
 
     @Override
     public void deleteLikeFilm(Long filmId, Long userId) {
-        if (userService.getUserById(userId) != null) {
-            filmStorage.getFilmById(filmId).getLikesId().remove(userId);
-        }
+        userService.getUserById(userId);
+        filmStorage.getFilmById(filmId).getLikesId().remove(userId);
     }
 
     @Override
