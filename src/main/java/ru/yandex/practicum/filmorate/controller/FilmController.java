@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import java.util.List;
 
@@ -33,6 +33,31 @@ public class FilmController {
         log.info("Обновляем фильм: {}", film.getName());
         filmService.updateFilm(film);
         return film;
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Long id) {
+        log.info("Получаем фильм по ID: {}", id);
+        return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public Film addLikeFilm(@PathVariable Long id, @PathVariable Long userId) {
+        log.info("Добавляем лайк к фильму: {}", id);
+        filmService.addLikeFilm(id, userId);
+        return filmService.getFilmById(id);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public Film deleteLikeFilm(@PathVariable Long id, @PathVariable Long userId) {
+        log.info("Удаляем лайк фильма: {}", id);
+        filmService.deleteLikeFilm(id, userId);
+        return filmService.getFilmById(id);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilm(@RequestParam(name = "count", defaultValue = "10") Integer count) {
+        return filmService.getPopularFilm(count);
     }
 }
 
