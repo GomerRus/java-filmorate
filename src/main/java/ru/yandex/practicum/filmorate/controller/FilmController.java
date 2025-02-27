@@ -5,8 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -14,7 +15,7 @@ import java.util.List;
 @RequestMapping("/films")
 @AllArgsConstructor
 public class FilmController {
-    private FilmService filmService;
+    private final FilmService filmService;
 
     @GetMapping
     public List<Film> getAllFilms() {
@@ -24,6 +25,9 @@ public class FilmController {
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
         log.info("Добавляем фильм: {}", film.getName());
+        if (film.getGenres() == null) {
+            film.setGenres(new ArrayList<>());
+        }
         filmService.addFilm(film);
         return film;
     }
@@ -31,6 +35,9 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Обновляем фильм: {}", film.getName());
+        if (film.getGenres() == null) {
+            film.setGenres(new ArrayList<>());
+        }
         filmService.updateFilm(film);
         return film;
     }
