@@ -27,12 +27,12 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getAllFilms() {
         String sql = """
-            SELECT f.film_id, f.name, f.description, f.release_Date, f.duration,
-                   m.mpa_rating_id, m.mpa_name
-            FROM films AS f
-            JOIN mpa_rating AS m ON f.rating_id = m.mpa_rating_id
-            ORDER BY f.film_id;
-            """;
+                SELECT f.film_id, f.name, f.description, f.release_Date, f.duration,
+                       m.mpa_rating_id, m.mpa_name
+                FROM films AS f
+                JOIN mpa_rating AS m ON f.rating_id = m.mpa_rating_id
+                ORDER BY f.film_id;
+                """;
         return jdbcTemplate.query(sql, new FilmRowMapper());
     }
 
@@ -84,7 +84,7 @@ public class FilmDbStorage implements FilmStorage {
                     .distinct()
                     .collect(Collectors.toList());
             String genreSql = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
-            jdbcTemplate.batchUpdate( genreSql, uniqueGenres, uniqueGenres.size(), (ps, genre) -> {
+            jdbcTemplate.batchUpdate(genreSql, uniqueGenres, uniqueGenres.size(), (ps, genre) -> {
                 ps.setLong(1, film.getId());
                 ps.setInt(2, genre.getId());
             });
