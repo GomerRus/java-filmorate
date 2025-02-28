@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class GenreDbStorage implements GenreStorage {
@@ -44,6 +46,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre getGenreById(int id) {
+        log.info("Получаем название жанра по ID: {}", id);
         String genreTableQuery = "SELECT * FROM genre WHERE genre_id = :id";
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
@@ -51,6 +54,7 @@ public class GenreDbStorage implements GenreStorage {
         if (genre.isEmpty()) {
             throw new NotFoundException("Жанр с id " + id + " не найден");
         }
+        log.info("По ID {} получено название жанра: {}.", id, genre.getFirst());
         return genre.getFirst();
     }
 }

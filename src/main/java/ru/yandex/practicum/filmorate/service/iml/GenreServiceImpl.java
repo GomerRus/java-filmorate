@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class InMemoryGenreService implements GenreService {
+public class GenreServiceImpl implements GenreService {
 
     private final GenreStorage genreStorage;
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class InMemoryUserService implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
 
     @Override

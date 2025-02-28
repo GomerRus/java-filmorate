@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Repository
 @Primary
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
+        log.info("Добавляем пользователя: {}", user);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(INSERT_USER_QUERY, new String[]{"user_id"});
@@ -43,11 +46,13 @@ public class UserDbStorage implements UserStorage {
             return ps;
         }, keyHolder);
         user.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        log.info("Добавлен пользователь: {}.", user.getLogin());
         return user;
     }
 
     @Override
     public void updateUser(User user) {
+        log.info("Обновляем данные пользователя: {}", user);
         validateUser(user.getId());
         jdbcTemplate.update(
                 UPDATE_USER_QUERY,
@@ -57,35 +62,43 @@ public class UserDbStorage implements UserStorage {
                 user.getBirthday(),
                 user.getId()
         );
+        log.info("Данные пользователя {} обновлены", user.getLogin());
     }
 
     @Override
     public User getUserById(Long userId) {
+        log.info("Получаем пользователя по ID: {}", userId);
         List<User> user = jdbcTemplate.query(FIND_BY_ID_QUERY, new UserRowMapper(), userId);
         if (user.isEmpty()) {
             throw new NotFoundException("Пользователь с id " + userId + " не найден");
         }
+        log.info("По ID {} получен пользователь: {}", userId, user.getFirst());
         return user.getFirst();
     }
 
     @Override
     public void addFriends(Long idUser1, Long idUser2) {
+        log.info("Пользователь {} хочет добавить в друзья {}", idUser1, idUser2);
         validateUser(idUser1);
         validateUser(idUser2);
         String sql = "INSERT INTO friends (user_id1, user_id2) VALUES (?, ?)";
         jdbcTemplate.update(sql, idUser1, idUser2);
+        log.info("Пользователь {} добавил в друзья {}", idUser1, idUser2);
     }
 
     @Override
     public void removeFriend(Long idUser1, Long idUser2) {
+        log.info("Пользователь {} хочет удалить из друзей {}", idUser1, idUser2);
         validateUser(idUser1);
         validateUser(idUser2);
         String sql = "DELETE FROM friends WHERE user_id1 = ? AND user_id2 = ?";
         jdbcTemplate.update(sql, idUser1, idUser2);
+        log.info("Пользователь {} удалил из друзей {}", idUser1, idUser2);
     }
 
     @Override
     public Collection<User> getFriends(Long id) {
+        log.info("Найти друга по ID: {}", id);
         validateUser(id);
         String sql = "SELECT u.* FROM friends AS f " +
                 "JOIN users AS u ON f.user_id2 = u.user_id " +
@@ -95,6 +108,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getCommonFriends(Long id1, Long id2) {
+        log.info("Найти общих друзей пользователей с ID {} и ID {}", id1, id2);
         validateUser(id1);
         validateUser(id2);
         String sql = "SELECT u.* FROM friends AS f1 " +
